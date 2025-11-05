@@ -20,7 +20,7 @@ class ShapeComponent(ABC):
     ShapeComponent.__set_attributes(self, kwargs, optional_args)
 
     self.bounding_rectangle = type(self).calculate_bounding_rectangle(self)
-    ShapeComponent.__apply_manipulations(self, optional_args)
+    ShapeComponent.apply_manipulations(self, optional_args)
     
 
   
@@ -43,8 +43,7 @@ class ShapeComponent(ABC):
   def calculate_bounding_rectangle(self):
     pass
   
-  @abstractmethod  
-  def __apply_manipulations(self, optional_args : dict):
+  def apply_manipulations(self, optional_args : dict):
     pass
 
   @abstractmethod
