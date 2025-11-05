@@ -1,5 +1,5 @@
 import argparse
-from Board import *
+from board import Board
 from shapes import ShapeFactory
 
 def main(json_path):
