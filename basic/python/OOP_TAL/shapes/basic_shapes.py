@@ -15,6 +15,8 @@ class Circle(BasicShape):
          cv2.circle(board, center=self.center, radius=self.radius, color=self.fill_color, thickness=-1)
       cv2.circle(board, center=self.center, radius=self.radius, color=self.line_color, thickness=self.thickness)   
 
+   def calculate_bounding_rectangle(self):
+      return [[self.center[0] - self.radius, self.center[1] - self.radius], [self.center[0] + self.radius, self.center[1] + self.radius]]
 
    def translation(self, x, y):
       return super().translation(x, y)
@@ -30,7 +32,12 @@ class Line(BasicShape):
    }                    
    def draw(self, board : np) -> np:
       cv2.line(board, pt1=self.start_point, pt2=self.end_point, color=self.line_color, thickness=self.thickness)
-   
+
+   def calculate_bounding_rectangle(self):
+      x_values = [self.start_point[0], self.end_point[0]]
+      y_values = [self.start_point[1], self.end_point[1]]
+      return [[min(x_values), min(y_values)],[max(x_values), max(y_values)]]
+
    def translation(self, x, y):
       return super().translation(x, y)
    def rotation(self, angle):
@@ -45,7 +52,8 @@ class Point(BasicShape):
    def draw(self, board : np):
       cv2.circle(board, center=self.position, radius=1, color=self.line_color, thickness=self.thickness)
       
-
+   def calculate_bounding_rectangle(self):
+      return [self.position, self.position]
       
    def translation(self, x, y):
       return super().translation(x, y)
