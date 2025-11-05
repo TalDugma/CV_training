@@ -3,6 +3,46 @@ from abc import ABC, abstractmethod
 __all__ = ['ShapeComponent', 'CompositeShape', 'BasicShape']
 
 class ShapeComponent(ABC):
+  _required_args = set()
+  _optional_args = {
+    "translation" : [0,0],
+    "rotation" : 0,
+    "resize" : 1
+  }
+  def __init__(self, **kwargs):
+    required_args = set().union(*[cls._required_args for cls in type(self).__mro__
+                                  if issubclass(cls, ShapeComponent)])
+    optional_args = {k: v for cls in type(self).__mro__
+                      if issubclass(cls, ShapeComponent)
+                      for k, v in cls._optional_args.items()
+                    }
+    ShapeComponent.__validate_shape_input(self, required_args.copy(), optional_args, kwargs)
+    ShapeComponent.__set_attributes(self, kwargs, optional_args)
+    
+
+    
+  def __validate_shape_input(self, required_args : set, optional_args : dict, kwargs : dict):
+    for key in kwargs:
+      if key in required_args:
+        required_args.remove(key)
+      elif key not in optional_args:
+        raise ValueError(f"Invalid entrance for {self}: '{key}'")
+    if required_args:
+      raise ValueError(f"Failed drawing shape {self}, missing required argument(s): {required_args}")  
+
+  def __set_attributes(self, shape_dict : dict, optional_args : dict):
+    for key, value in optional_args.items():
+      setattr(self, key, value)
+    for key, value in shape_dict.items():
+      setattr(self, key, value)
+      
+
+
+    
+
+  
+
+   
   
   @abstractmethod
   def draw():
@@ -23,10 +63,9 @@ class ShapeComponent(ABC):
 
 
 class CompositeShape(ShapeComponent):
-  def __init__(self, shape_list : list[ShapeComponent], shape_dict : dict = {}):
-    self.shap_dict = shape_dict
-    self.shapes = shape_list
-    CompositeShape.__apply_manipulations(self)
+  _required_args = {
+    "shapes"
+  }
 
   def __apply_manipulations(self):
     pass
@@ -58,19 +97,6 @@ class BasicShape(ShapeComponent):
       "thickness" : 2,
       "fill_color" : None,
   }
-  _optional_manipulations = {
-      "translation" : [0,0],
-      "rotation" : 0,
-      "resize" : 1
-  }
-
-  def __init__(self, shape_dict : dict):
-    required_args = self._required_args.copy()
-    optional_args = BasicShape._optional_args | self._optional_args
-    optional_manipulations = BasicShape._optional_manipulations | self._optional_manipulations
-    BasicShape.__validate_shape_input(self, required_args, optional_args, shape_dict)
-    BasicShape.__set_attributes(self, shape_dict, optional_args)
-    BasicShape.__apply_manipulations(self, optional_manipulations)
 
   def __apply_manipulations(self, optional_manipulations : dict):
     # NOTE: This should be done if we want to keep open/closed principle right. 

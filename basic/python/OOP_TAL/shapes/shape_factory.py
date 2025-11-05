@@ -26,16 +26,19 @@ class ShapeFactory:
   
   @classmethod
   def create_basic_shape(cls, shape_name : str, shape_dict : dict):
-    return cls._basic_shapes[shape_name](shape_dict)
+    return cls._basic_shapes[shape_name](**shape_dict)
 
   @classmethod
   def create_composite_shape(cls, shape_dict : dict):
     if "path" in shape_dict:
-      return CompositeShape(cls.create_shapes_from_json(shape_dict["path"]))
+      shape_list = cls.create_shapes_from_json(shape_dict["path"])
+      shape_dict.pop("path")
     elif "shapes" in shape_dict:
-      return CompositeShape(cls.create_shapes_from_shape_list(shape_dict["shapes"]))
+      shape_list=cls.create_shapes_from_shape_list(shape_dict["shapes"])
     else:
       raise ValueError("Composite shape does not contain path and shape keys")
+    shape_dict["shapes"]= shape_list
+    return CompositeShape(**shape_dict)
   
   @classmethod
   def create_shapes_from_json(cls, json_path : str) -> list[ShapeComponent]:
