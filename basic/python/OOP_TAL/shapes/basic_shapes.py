@@ -64,14 +64,22 @@ class Point(BasicShape):
    
 class Rectangle(BasicShape):
    _required_args = {
-      "top_left",
-      "bottom_right"
+      "p1",
+      "p2",
+      "p3",
+      "p4"
    }
-   
    def draw(self, board):
+      points = np.array([self.p1, self.p2, self.p3, self.p4], dtype=np.int32)
+      rect = cv2.minAreaRect(points)
+      box = cv2.boxPoints(rect)
+      box = np.int32(box)
       if self.fill_color:
-         cv2.rectangle(board, pt1=self.top_left, pt2=self.bottom_right, color=self.fill_color, thickness=-1)
-      cv2.rectangle(board, pt1=self.top_left , pt2=self.bottom_right ,color=self.line_color ,thickness=self.thickness)
+         cv2.fillPoly(board, [box], color=self.fill_color)
+      cv2.polylines(board, [box], isClosed=True, color=self.line_color, thickness=self.thickness)
+   
+   def calculate_bounding_rectangle(self):
+      return
    
    def translation(self, x, y):
       return super().translation(x, y)
