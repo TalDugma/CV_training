@@ -18,9 +18,12 @@ class ShapeComponent(ABC):
                     }
     ShapeComponent.__validate_shape_input(self, required_args.copy(), optional_args, kwargs)
     ShapeComponent.__set_attributes(self, kwargs, optional_args)
+
+    self.bounding_rectangle = type(self).calculate_bounding_rectangle(self)
+    ShapeComponent.__apply_manipulations(self, optional_args)
     
 
-    
+  
   def __validate_shape_input(self, required_args : set, optional_args : dict, kwargs : dict):
     for key in kwargs:
       if key in required_args:
@@ -35,15 +38,15 @@ class ShapeComponent(ABC):
       setattr(self, key, value)
     for key, value in shape_dict.items():
       setattr(self, key, value)
-      
 
-
-    
-
+  @abstractmethod
+  def calculate_bounding_rectangle(self):
+    pass
   
+  @abstractmethod  
+  def __apply_manipulations(self, optional_args : dict):
+    pass
 
-   
-  
   @abstractmethod
   def draw():
     pass
@@ -66,11 +69,6 @@ class CompositeShape(ShapeComponent):
   _required_args = {
     "shapes"
   }
-
-  def __apply_manipulations(self):
-    pass
-
-
 
   def resize(self, scale):
     for shape in self.shapes:
@@ -110,23 +108,7 @@ class BasicShape(ShapeComponent):
 
 
 
-    pass
-
-  def __validate_shape_input(self, required_args : set, optional_args : dict, shape_dict : dict):
-    for key in shape_dict:
-      if key in required_args:
-        required_args.remove(key)
-      elif key not in optional_args:
-        raise ValueError(f"Invalid entrance for {self}: '{key}'")
-    if required_args:
-      raise ValueError(f"Failed drawing shape {self}, missing required argument(s): {required_args}")  
-  
-  def __set_attributes(self, shape_dict : dict, optional_args : dict):
-    for key, value in optional_args.items():
-      setattr(self, key, value)
-    for key, value in shape_dict.items():
-      setattr(self, key, value)
-    
+    pass    
 
   def __repr__(self):
     attrs = ', '.join(f"{k}={v}" for k, v in vars(self).items())
