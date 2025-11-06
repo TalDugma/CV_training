@@ -9,6 +9,7 @@ class ShapeComponent(ABC):
     "rotation" : 0,
     "resize" : 1
   }
+  
   def __init__(self, **kwargs):
     required_args = set().union(*[cls._required_args for cls in type(self).__mro__
                                   if issubclass(cls, ShapeComponent)])
@@ -16,15 +17,15 @@ class ShapeComponent(ABC):
                       if issubclass(cls, ShapeComponent)
                       for k, v in cls._optional_args.items()
                     }
-    ShapeComponent.__validate_shape_input(self, required_args.copy(), optional_args, kwargs)
-    ShapeComponent.__set_attributes(self, kwargs, optional_args)
+    self._validate_shape_input(required_args.copy(), optional_args, kwargs)
+    self._set_attributes(kwargs, optional_args)
 
-    self.bounding_rectangle = type(self).calculate_bounding_rectangle(self)
-    ShapeComponent.apply_manipulations(self, optional_args)
+    self.bounding_rectangle = self.calculate_bounding_rectangle()
+    self._apply_manipulations(optional_args)
     
 
   
-  def __validate_shape_input(self, required_args : set, optional_args : dict, kwargs : dict):
+  def _validate_shape_input(self, required_args : set, optional_args : dict, kwargs : dict):
     for key in kwargs:
       if key in required_args:
         required_args.remove(key)
@@ -33,33 +34,37 @@ class ShapeComponent(ABC):
     if required_args:
       raise ValueError(f"Failed drawing shape {self}, missing required argument(s): {required_args}")  
 
-  def __set_attributes(self, shape_dict : dict, optional_args : dict):
+  def _set_attributes(self, shape_dict : dict, optional_args : dict):
     for key, value in optional_args.items():
       setattr(self, key, value)
     for key, value in shape_dict.items():
       setattr(self, key, value)
 
+  
   @abstractmethod
   def calculate_bounding_rectangle(self):
     pass
   
-  def apply_manipulations(self, optional_args : dict):
-    pass
+  def _apply_manipulations(self, optional_args : dict):
+    self.translate_shape(optional_args["translation"])
+    self.resize_shape(optional_args["resize"])
+    self.rotate_shape(optional_args["rotation"])
+
 
   @abstractmethod
   def draw():
     pass
   
   @abstractmethod
-  def resize(self, scale : float):
+  def resize_shape(self, scale : float):
     pass
   
   @abstractmethod
-  def rotation(self, angle: float):
+  def rotate_shape(self, angle: float):
     pass
-  
+
   @abstractmethod
-  def translation(self, x : float, y : float):
+  def translate_shape(self, x : float, y : float):
     pass
   
 
@@ -85,6 +90,16 @@ class CompositeShape(ShapeComponent):
   def draw(self, board):
     for shape in self.shapes:
       shape.draw(board)
+
+  def calculate_bounding_rectangle(self) -> list[list[int, int], list[int, int]]: 
+    shapes_bounding_rectangles = [shape.bounding_rectangle for shape in self.shapes]
+    x_values = []
+    y_values = []
+    for bounding_rectangle in shapes_bounding_rectangles:
+      x_values.extend([bounding_rectangle[0][0], bounding_rectangle[1][0]])
+      y_values.extend([bounding_rectangle[0][1], bounding_rectangle[1][1]])
+    return [[min(x_values), min(y_values)], [max(x_values), max(y_values)]]
+      
   
 
 class BasicShape(ShapeComponent):
