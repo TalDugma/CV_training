@@ -52,14 +52,17 @@ class ShapeComponent(ABC):
   def resize_bounding_rectangle(self, scale : float):
     pass
 
+  def rotate_bounding_rectangle(self, angle : float):
+    pass
+
   def _apply_manipulations(self):
-    bounding_rectangle_center = [(self.bounding_rectangle[0][0] + self.bounding_rectangle[1][0])/2, (self.bounding_rectangle[0][1] + self.bounding_rectangle[1][1])/2]
+    bounding_rectangle_center = [int((self.bounding_rectangle[0][0] + self.bounding_rectangle[1][0])/2),int((self.bounding_rectangle[0][1] + self.bounding_rectangle[1][1])/2)]
     self.translate_shape(self.translation)
-    # self.move_shape_to_center_aligned_axis(self.bounding_rectangle)
-    # self.resize_shape(self.resize)
-    # self.rotate_shape(self.rotation)
-    # self.move_shape_to_center_aligned_axis(-self.bounding_rectangle)
-    # self.mo
+    self.move_shape_to_center_aligned_axis([-x for x in bounding_rectangle_center])
+    self.resize_shape(self.resize)
+    self.rotate_shape(self.rotation)
+    self.move_shape_to_center_aligned_axis(bounding_rectangle_center)
+  
 
   @staticmethod
   def convert_angle_to_translation_matrix(angle : float):
