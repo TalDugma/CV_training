@@ -13,7 +13,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "json_path",
         nargs="?",
-        default="json_example_2.json",
+        default="house.json",
         help="Path to JSON file used for the drawing",
     )
     args = parser.parse_args()
