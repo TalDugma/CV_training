@@ -64,10 +64,8 @@ class Point(BasicShape):
    
 class Rectangle(BasicShape):
    _required_args = {
-      "p1",
-      "p2",
-      "p3",
-      "p4"
+      "top_left",
+      "bottom_right"
    }
    def draw(self, board):
       points = np.array([self.p1, self.p2, self.p3, self.p4], dtype=np.int32)
@@ -79,7 +77,22 @@ class Rectangle(BasicShape):
       cv2.polylines(board, [box], isClosed=True, color=self.line_color, thickness=self.thickness)
    
    def calculate_bounding_rectangle(self):
-      return
+      points = np.array([self.p1, self.p2, self.p3, self.p4], dtype=np.int32)[:, np.newaxis]
+      x, y, w, h = cv2.boundingRect(points)
+      return [[x, y], [x+w, y+h]] 
+
+   def _set_attributes(self, shape_dict : dict, optional_args : dict):
+      for key, value in optional_args.items():
+         setattr(self, key, value)  
+      top_left = shape_dict["top_left"]
+      bottom_right = shape_dict["bottom_right"]
+      self.p1 = top_left
+      self.p2 = [top_left[0], bottom_right[1]]
+      self.p3 = [bottom_right[0], top_left[1]]
+      self.p4 = bottom_right
+
+
+      
    
    def translation(self, x, y):
       return super().translation(x, y)
