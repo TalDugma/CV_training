@@ -23,11 +23,12 @@ class Circle(BasicShape):
       self.center = self.add_lists(self.center, translation)
    
 
-   def rotate_shape(self, angle):
+   def rotate_shape(self, angle : float):
       return
    
-   def resize_shape(self, scale):
-      return
+   def resize_shape(self, scale : float):
+      super().resize_shape(scale)
+      self.radius = self.radius * scale
       
 
 class Line(BasicShape):
@@ -49,13 +50,17 @@ class Line(BasicShape):
       self.end_point = self.add_lists(self.end_point, translation)
 
    def rotate_shape(self, angle):
+      super().rotate_shape(angle)
       matrix = self.convert_angle_to_translation_matrix(angle)
-      self.start_point = self.start_point @ matrix
-      self.end_point = self.end_point @ matrix
+      self.start_point = list(map(int, self.start_point @ matrix))
+      self.end_point = list(map(int, self.end_point @ matrix))
 
       
    def resize_shape(self, scale):
-      return super().resize_shape(scale)
+      super().resize_shape(scale)
+      matrix = self.convert_scale_to_scale_matrix(scale)
+      self.start_point = list(map(int, self.start_point @ matrix))
+      self.end_point = list(map(int, self.end_point @ matrix))
       
     
 class Point(BasicShape):
@@ -76,7 +81,7 @@ class Point(BasicShape):
       return
    
    def resize_shape(self, scale):
-      return super().resize_shape(scale)
+      return      
    
 class Rectangle(BasicShape):
    _required_args = {
@@ -98,14 +103,13 @@ class Rectangle(BasicShape):
       return [[x, y], [x+w, y+h]] 
 
    def _set_attributes(self, shape_dict : dict, optional_args : dict):
-      for key, value in optional_args.items():
-         setattr(self, key, value)  
-      top_left = shape_dict["top_left"]
-      bottom_right = shape_dict["bottom_right"]
+      top_left = shape_dict.pop("top_left")
+      bottom_right = shape_dict.pop("bottom_right")
       self.p1 = top_left
       self.p2 = [top_left[0], bottom_right[1]]
       self.p3 = [bottom_right[0], top_left[1]]
       self.p4 = bottom_right
+      super()._set_attributes(shape_dict, optional_args)
 
 
    def translate_shape(self, translation):
@@ -116,14 +120,20 @@ class Rectangle(BasicShape):
       self.p4 = self.add_lists(self.p4, translation)
 
    def rotate_shape(self, angle):
+      super().rotate_shape(angle)
       matrix = self.convert_angle_to_translation_matrix(angle)
-      self.p1 = self.p1 @ matrix
-      self.p2 = self.p2 @ matrix
-      self.p3 = self.p3 @ matrix
-      self.p4 = self.p4 @ matrix
+      self.p1 = list(map(int, self.p1 @ matrix))
+      self.p2 = list(map(int, self.p2 @ matrix))
+      self.p3 = list(map(int, self.p3 @ matrix))
+      self.p4 = list(map(int, self.p4 @ matrix))
 
    def resize_shape(self, scale):
-      return super().resize_shape(scale)
+      super().resize_shape(scale)
+      matrix = self.convert_scale_to_scale_matrix(scale)
+      self.p1 = list(map(int, self.p1 @ matrix))
+      self.p2 = list(map(int, self.p2 @ matrix))
+      self.p3 = list(map(int, self.p3 @ matrix))
+      self.p4 = list(map(int, self.p4 @ matrix))
    
 class Triangle(BasicShape):
    _required_args = {
@@ -159,12 +169,17 @@ class Triangle(BasicShape):
       self.p3 = self.add_lists(self.p3, translation)
 
    def rotate_shape(self, angle):
+      super().rotate_shape(angle)
       matrix = self.convert_angle_to_translation_matrix(angle)
-      self.p1 = self.p1 @ matrix
-      self.p2 = self.p2 @ matrix
-      self.p3 = self.p3 @ matrix
+      self.p1 = list(map(int, (self.p1 @ matrix)))
+      self.p2 = list(map(int, self.p2 @ matrix))
+      self.p3 = list(map(int, self.p3 @ matrix))
 
       
    def resize_shape(self, scale):
-      return super().resize_shape(scale)
+      super().resize_shape(scale)
+      matrix = self.convert_scale_to_scale_matrix(scale)
+      self.p1 = list(map(int, self.p1 @ matrix))
+      self.p2 = list(map(int, self.p2 @ matrix))
+      self.p3 = list(map(int, self.p3 @ matrix))
    
