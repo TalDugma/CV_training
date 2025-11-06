@@ -18,13 +18,18 @@ class Circle(BasicShape):
    def calculate_bounding_rectangle(self):
       return [[self.center[0] - self.radius, self.center[1] - self.radius], [self.center[0] + self.radius, self.center[1] + self.radius]]
 
-   def translation(self, x, y):
-      return super().translation(x, y)
-   def rotation(self, angle):
-      return super().rotation(angle)
-   def resize(self, scale):
-      return super().resize(scale)
+   def translate_shape(self, translation) -> None:
+      super().translate_shape(translation)
+      self.center = self.add_lists(self.center, translation)
+   
+
+   def rotate_shape(self, angle):
+      return
+   
+   def resize_shape(self, scale):
+      return
       
+
 class Line(BasicShape):
    _required_args = {
       "start_point",
@@ -38,12 +43,20 @@ class Line(BasicShape):
       y_values = [self.start_point[1], self.end_point[1]]
       return [[min(x_values), min(y_values)],[max(x_values), max(y_values)]]
 
-   def translation(self, x, y):
-      return super().translation(x, y)
-   def rotation(self, angle):
-      return super().rotation(angle)
-   def resize(self, scale):
-      return super().resize(scale)
+   def translate_shape(self, translation):
+      super().translate_shape(translation)
+      self.start_point = self.add_lists(self.start_point, translation)
+      self.end_point = self.add_lists(self.end_point, translation)
+
+   def rotate_shape(self, angle):
+      matrix = self.convert_angle_to_translation_matrix(angle)
+      self.start_point = self.start_point @ matrix
+      self.end_point = self.end_point @ matrix
+
+      
+   def resize_shape(self, scale):
+      return super().resize_shape(scale)
+      
     
 class Point(BasicShape):
    _required_args = {
@@ -55,12 +68,15 @@ class Point(BasicShape):
    def calculate_bounding_rectangle(self):
       return [self.position, self.position]
       
-   def translation(self, x, y):
-      return super().translation(x, y)
-   def rotation(self, angle):
-      return super().rotation(angle)
-   def resize(self, _scale):
-      return 
+   def translate_shape(self, translation):
+      super().translate_shape(translation)
+      self.position = self.add_lists(self.position, translation)
+
+   def rotate_shape(self, angle):
+      return
+   
+   def resize_shape(self, scale):
+      return super().resize_shape(scale)
    
 class Rectangle(BasicShape):
    _required_args = {
@@ -92,14 +108,22 @@ class Rectangle(BasicShape):
       self.p4 = bottom_right
 
 
-      
-   
-   def translation(self, x, y):
-      return super().translation(x, y)
-   def rotation(self, angle):
-      return super().rotation(angle)
-   def resize(self, scale):
-      return super().resize(scale)
+   def translate_shape(self, translation):
+      super().translate_shape(translation)
+      self.p1 = self.add_lists(self.p1, translation)
+      self.p2 = self.add_lists(self.p2, translation)
+      self.p3 = self.add_lists(self.p3, translation)
+      self.p4 = self.add_lists(self.p4, translation)
+
+   def rotate_shape(self, angle):
+      matrix = self.convert_angle_to_translation_matrix(angle)
+      self.p1 = self.p1 @ matrix
+      self.p2 = self.p2 @ matrix
+      self.p3 = self.p3 @ matrix
+      self.p4 = self.p4 @ matrix
+
+   def resize_shape(self, scale):
+      return super().resize_shape(scale)
    
 class Triangle(BasicShape):
    _required_args = {
@@ -122,10 +146,25 @@ class Triangle(BasicShape):
       cv2.line(board, pt1=points[0], pt2=points[1], color=self.line_color, thickness=self.thickness)
       cv2.line(board, pt1=points[1], pt2=points[2], color=self.line_color, thickness=self.thickness)
       cv2.line(board, pt1=points[2], pt2=points[0], color=self.line_color, thickness=self.thickness)
-         
-   def translation(self, x, y):
-      return super().translation(x, y)
-   def rotation(self, angle):
-      return super().rotation(angle)
-   def resize(self, scale):
-      return super().resize(scale)   
+   
+   def calculate_bounding_rectangle(self):
+      x_values = [self.p1[0], self.p2[0], self.p3[0]]
+      y_values = [self.p1[1], self.p2[1], self.p3[1]]
+      return [[min(x_values), min(y_values)],[max(x_values), max(y_values)]]
+      
+   def translate_shape(self, translation):
+      super().translate_shape(translation)
+      self.p1 = self.add_lists(self.p1, translation)
+      self.p2 = self.add_lists(self.p2, translation)
+      self.p3 = self.add_lists(self.p3, translation)
+
+   def rotate_shape(self, angle):
+      matrix = self.convert_angle_to_translation_matrix(angle)
+      self.p1 = self.p1 @ matrix
+      self.p2 = self.p2 @ matrix
+      self.p3 = self.p3 @ matrix
+
+      
+   def resize_shape(self, scale):
+      return super().resize_shape(scale)
+   
