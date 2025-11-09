@@ -1,3 +1,0 @@
-import shapes
-
-line = Line()
