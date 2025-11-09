@@ -30,7 +30,7 @@ class ShapeComponent(ABC):
 
     def _validate_shape_input(
         self, required_args: set, optional_args: dict, kwargs: dict
-    ):
+    ) -> None:
         for key in kwargs:
             if key in required_args:
                 required_args.remove(key)
@@ -41,7 +41,7 @@ class ShapeComponent(ABC):
                 f"Failed drawing shape {self}, missing required argument(s): {required_args}"
             )
 
-    def _set_attributes(self, shape_dict: dict, optional_args: dict):
+    def _set_attributes(self, shape_dict: dict, optional_args: dict) -> None:
         for key, value in optional_args.items():
             setattr(self, key, value)
         for key, value in shape_dict.items():
@@ -54,7 +54,7 @@ class ShapeComponent(ABC):
     def translate_bbox(self, translation: list[int, int]) -> None:
         self.bbox_center = self.add_lists(self.bbox_center, translation)
 
-    def _apply_manipulations(self):
+    def _apply_manipulations(self) -> None:
         self.translate_shape(self.translation)
         self.translate_bbox(self.translation)
         self.move_shape_to_center_aligned_axis([-x for x in self.bbox_center])
@@ -63,21 +63,21 @@ class ShapeComponent(ABC):
         self.move_shape_to_center_aligned_axis(self.bbox_center)
 
     @staticmethod
-    def convert_angle_to_rotation_matrix(angle: float):
+    def convert_angle_to_rotation_matrix(angle: float) -> np.ndarray:
         theta = np.radians(angle)
         return np.array(
             [[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]]
         )
 
     @staticmethod
-    def convert_scale_to_scale_matrix(scale: float):
+    def convert_scale_to_scale_matrix(scale: float) -> np.ndarray:
         return np.array([[scale, 0], [0, scale]])
 
     @staticmethod
     def add_lists(a: list, b: list) -> list:
         return [x + y for x, y in zip(a, b)]
 
-    def move_shape_to_center_aligned_axis(self, center: list[int, int]):
+    def move_shape_to_center_aligned_axis(self, center: list[int, int]) -> None:
         self.translate_shape(center)
 
     @abstractmethod
@@ -100,23 +100,23 @@ class ShapeComponent(ABC):
 class CompositeShape(ShapeComponent):
     _required_args = {"shapes"}
 
-    def resize_shape(self, scale):
+    def resize_shape(self, scale: float) -> None:
         for shape in self.shapes:
             shape.resize_shape(scale)
 
-    def rotate_shape(self, angle):
+    def rotate_shape(self, angle: float) -> None:
         for shape in self.shapes:
             shape.rotate_shape(angle)
 
-    def translate_shape(self, translation):
+    def translate_shape(self, translation: list[int, int]) -> None:
         for shape in self.shapes:
             shape.translate_shape(translation)
 
-    def draw(self, board):
+    def draw(self, board: np.ndarray) -> None:
         for shape in self.shapes:
             shape.draw(board)
 
-    def calculate_bbox(self):
+    def calculate_bbox(self) -> list[list[int, int], list[int, int]]:
         shapes_bboxs = [shape.calculate_bbox() for shape in self.shapes]
         x_values = []
         y_values = []
@@ -125,7 +125,7 @@ class CompositeShape(ShapeComponent):
             y_values.extend([bbox[0][1], bbox[1][1]])
         return [[min(x_values), min(y_values)], [max(x_values), max(y_values)]]
 
-    def calculate_bbox_center(self):
+    def calculate_bbox_center(self) -> list[int, int]:
         bbox = self.calculate_bbox()
         return [int((bbox[0][0] + bbox[1][0]) / 2), int((bbox[0][1] + bbox[1][1]) / 2)]
 
@@ -137,18 +137,6 @@ class BasicShape(ShapeComponent):
         "thickness": 2,
         "fill_color": None,
     }
-
-    def __apply_manipulations(self, optional_manipulations: dict):
-        # NOTE: This should be done if we want to keep open/closed principle right.
-        # for manipulation_name, value in optional_manipulations.items():
-        #   manipulation = ManipulationFactory.create_manipulation(manipulation_name)
-        #   manipulation.manipulate(self, value)
-
-        # NOTE: This is what we should do if we just care about finishing it - functional programming
-        # for manipulation_name, value in optional_manipulations.items():
-        #   manipulation_mapping["manipulation_name"](self, value)
-
-        pass
 
     def __repr__(self):
         attrs = ", ".join(f"{k}={v}" for k, v in vars(self).items())
