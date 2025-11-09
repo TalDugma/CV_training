@@ -47,9 +47,9 @@ class ShapeComponent(ABC):
         for key, value in shape_dict.items():
             setattr(self, key, value)
 
-    @abstractmethod
     def calculate_bbox_center(self) -> list[int, int]:
-        pass
+        bbox = self.calculate_bbox()
+        return [int((bbox[0][0] + bbox[1][0]) / 2), int((bbox[0][1] + bbox[1][1]) / 2)]
 
     def translate_bbox(self, translation: list[int, int]) -> None:
         self.bbox_center = self.add_lists(self.bbox_center, translation)
@@ -123,10 +123,6 @@ class CompositeShape(ShapeComponent):
             x_values.extend([bbox[0][0], bbox[1][0]])
             y_values.extend([bbox[0][1], bbox[1][1]])
         return [[min(x_values), min(y_values)], [max(x_values), max(y_values)]]
-
-    def calculate_bbox_center(self) -> list[int, int]:
-        bbox = self.calculate_bbox()
-        return [int((bbox[0][0] + bbox[1][0]) / 2), int((bbox[0][1] + bbox[1][1]) / 2)]
 
 
 class BasicShape(ShapeComponent):

@@ -60,10 +60,6 @@ class Line(BasicShape):
             thickness=self.thickness,
         )
 
-    def calculate_bbox_center(self) -> list[int, int]:
-        bbox = self.calculate_bbox()
-        return [int((bbox[0][0] + bbox[1][0]) / 2), int((bbox[0][1] + bbox[1][1]) / 2)]
-
     def calculate_bbox(self) -> list[list[int, int], list[int, int]]:
         x_values = [self.start_point[0], self.end_point[0]]
         y_values = [self.start_point[1], self.end_point[1]]
@@ -127,10 +123,6 @@ class Rectangle(BasicShape):
         cv2.polylines(
             board, [box], isClosed=True, color=self.line_color, thickness=self.thickness
         )
-
-    def calculate_bbox_center(self) -> list[int, int]:
-        bbox = self.calculate_bbox()
-        return [int((bbox[0][0] + bbox[1][0]) / 2), int((bbox[0][1] + bbox[1][1]) / 2)]
 
     def calculate_bbox(self) -> list[list[int, int], list[int, int]]:
         points = np.array([self.p1, self.p2, self.p3, self.p4], dtype=np.int32)[
@@ -204,10 +196,6 @@ class Triangle(BasicShape):
             color=self.line_color,
             thickness=self.thickness,
         )
-
-    def calculate_bbox_center(self) -> list[int, int]:
-        bbox = self.calculate_bbox()
-        return [int((bbox[0][0] + bbox[1][0]) / 2), int((bbox[0][1] + bbox[1][1]) / 2)]
 
     def calculate_bbox(self) -> list[list[int, int], list[int, int]]:
         x_values = [self.p1[0], self.p2[0], self.p3[0]]
