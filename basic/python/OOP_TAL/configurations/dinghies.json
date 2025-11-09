@@ -1,7 +1,7 @@
 [
     {
         "name": "composite",
-        "path": "configurations/ship.json",
+        "path": "configurations/dinghy.json",
         "translation": [
             400,
             400
@@ -11,7 +11,7 @@
     },
     {
         "name": "composite",
-        "path": "configurations/ship.json",
+        "path": "configurations/dinghy.json",
         "translation": [
             0,
             300
@@ -20,7 +20,7 @@
     },
     {
         "name": "composite",
-        "path": "configurations/ship.json",
+        "path": "configurations/dinghy.json",
         "translation": [
             200,
             200
