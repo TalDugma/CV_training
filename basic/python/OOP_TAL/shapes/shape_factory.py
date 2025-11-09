@@ -40,8 +40,7 @@ class ShapeFactory:
             shape_list = cls.create_shapes_from_shape_list(shape_dict["shapes"])
         else:
             raise ValueError("Composite shape does not contain path and shape keys")
-        shape_dict["shapes"] = shape_list
-        return CompositeShape(**shape_dict)
+        return CompositeShape(shapes=shape_list, **shape_dict)
 
     @classmethod
     def create_shapes_from_json(cls, json_path: str) -> list[ShapeComponent]:
