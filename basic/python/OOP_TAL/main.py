@@ -7,7 +7,7 @@ def main(args):
     board = Board(args.background_color)
     shapes = ShapeFactory.create_shapes_from_json(args.json_path)
     board.draw(shapes)
-    board.save("results/board.png")
+    board.save("results/best_drawing_ever.png")
 
 
 if __name__ == "__main__":
