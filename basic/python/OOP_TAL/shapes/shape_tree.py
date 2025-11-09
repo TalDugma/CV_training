@@ -21,7 +21,7 @@ class ShapeComponent(ABC):
     self._validate_shape_input(required_args.copy(), optional_args, kwargs)
     self._set_attributes(kwargs, optional_args)
 
-    self.bounding_rectangle = self.calculate_bounding_rectangle()
+    self.bbox = self.calculate_bbox()
     self._apply_manipulations()
     
 
@@ -43,29 +43,36 @@ class ShapeComponent(ABC):
 
   
   @abstractmethod
-  def calculate_bounding_rectangle(self) -> list[list[int, int], list[int, int]]:
+  def calculate_bbox(self) -> list[list[int, int], list[int, int]]:
     pass
 
-  def translate_bounding_rectangle(self, translation : list[int, int]) -> None:
-    self.bounding_rectangle = [self.add_lists(self.bounding_rectangle[0], translation), self.add_lists(self.bounding_rectangle[1], translation)]
+  def translate_bbox(self, translation : list[int, int]) -> None:
+    self.bbox = [self.add_lists(self.bbox[0], translation), self.add_lists(self.bbox[1], translation)]
     
-  def resize_bounding_rectangle(self, scale : float):
-    pass
+  def resize_bbox(self, scale : float):
+    matrix = self.convert_scale_to_scale_matrix(scale)
+    top_left = (np.array(self.bbox[0]) @ matrix).tolist()
+    bottom_right = (np.array(self.bbox[1]) @ matrix).tolist()
+    self.bbox = [top_left, bottom_right]
 
-  def rotate_bounding_rectangle(self, angle : float):
-    pass
+  def rotate_bbox(self, angle : float):
+    matrix = self.convert_angle_to_rotation_matrix(angle)
+    top_left = (np.array(self.bbox[0]) @ matrix).tolist()
+    bottom_right = (np.array(self.bbox[1]) @ matrix).tolist()
+    self.bbox = [top_left, bottom_right]
+
 
   def _apply_manipulations(self):
-    bounding_rectangle_center = [int((self.bounding_rectangle[0][0] + self.bounding_rectangle[1][0])/2),int((self.bounding_rectangle[0][1] + self.bounding_rectangle[1][1])/2)]
+    bbox_center = [int((self.bbox[0][0] + self.bbox[1][0])/2),int((self.bbox[0][1] + self.bbox[1][1])/2)]
     self.translate_shape(self.translation)
-    self.move_shape_to_center_aligned_axis([-x for x in bounding_rectangle_center])
+    self.move_shape_to_center_aligned_axis([-x for x in bbox_center])
     self.resize_shape(self.resize)
     self.rotate_shape(self.rotation)
-    self.move_shape_to_center_aligned_axis(bounding_rectangle_center)
+    self.move_shape_to_center_aligned_axis(bbox_center)
   
 
   @staticmethod
-  def convert_angle_to_translation_matrix(angle : float):
+  def convert_angle_to_rotation_matrix(angle : float):
     theta = np.radians(angle)
     return np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
 
@@ -88,15 +95,15 @@ class ShapeComponent(ABC):
   
   @abstractmethod
   def resize_shape(self, scale : float):
-    self.resize_bounding_rectangle(scale)
+    self.resize_bbox(scale)
   
   @abstractmethod
   def rotate_shape(self, angle: float):
-    pass
+    self.rotate_bbox(angle)
 
   @abstractmethod
   def translate_shape(self, translation : list[int,int]):
-    self.translate_bounding_rectangle(translation)
+    self.translate_bbox(translation)
   
 
 
@@ -118,13 +125,13 @@ class CompositeShape(ShapeComponent):
     for shape in self.shapes:
       shape.draw(board)
 
-  def calculate_bounding_rectangle(self): 
-    shapes_bounding_rectangles = [shape.bounding_rectangle for shape in self.shapes]
+  def calculate_bbox(self): 
+    shapes_bboxs = [shape.bbox for shape in self.shapes]
     x_values = []
     y_values = []
-    for bounding_rectangle in shapes_bounding_rectangles:
-      x_values.extend([bounding_rectangle[0][0], bounding_rectangle[1][0]])
-      y_values.extend([bounding_rectangle[0][1], bounding_rectangle[1][1]])
+    for bbox in shapes_bboxs:
+      x_values.extend([bbox[0][0], bbox[1][0]])
+      y_values.extend([bbox[0][1], bbox[1][1]])
     return [[min(x_values), min(y_values)], [max(x_values), max(y_values)]]
       
   

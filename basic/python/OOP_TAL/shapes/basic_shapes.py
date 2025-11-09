@@ -15,20 +15,20 @@ class Circle(BasicShape):
          cv2.circle(board, center=self.center, radius=self.radius, color=self.fill_color, thickness=-1)
       cv2.circle(board, center=self.center, radius=self.radius, color=self.line_color, thickness=self.thickness)   
 
-   def calculate_bounding_rectangle(self):
+   def calculate_bbox(self):
       return [[self.center[0] - self.radius, self.center[1] - self.radius], [self.center[0] + self.radius, self.center[1] + self.radius]]
 
    def translate_shape(self, translation) -> None:
-      super().translate_shape(translation)
       self.center = self.add_lists(self.center, translation)
+      super().translate_shape(translation)
    
 
    def rotate_shape(self, angle : float):
       return
    
    def resize_shape(self, scale : float):
-      super().resize_shape(scale)
       self.radius = self.radius * scale
+      super().resize_shape(scale)
       
 
 class Line(BasicShape):
@@ -39,28 +39,28 @@ class Line(BasicShape):
    def draw(self, board : np) -> np:
       cv2.line(board, pt1=self.start_point, pt2=self.end_point, color=self.line_color, thickness=self.thickness)
 
-   def calculate_bounding_rectangle(self):
+   def calculate_bbox(self):
       x_values = [self.start_point[0], self.end_point[0]]
       y_values = [self.start_point[1], self.end_point[1]]
       return [[min(x_values), min(y_values)],[max(x_values), max(y_values)]]
 
    def translate_shape(self, translation):
-      super().translate_shape(translation)
       self.start_point = self.add_lists(self.start_point, translation)
       self.end_point = self.add_lists(self.end_point, translation)
+      super().translate_shape(translation)
 
    def rotate_shape(self, angle):
-      super().rotate_shape(angle)
-      matrix = self.convert_angle_to_translation_matrix(angle)
+      matrix = self.convert_angle_to_rotation_matrix(angle)
       self.start_point = list(map(int, self.start_point @ matrix))
       self.end_point = list(map(int, self.end_point @ matrix))
+      super().rotate_shape(angle)
 
       
    def resize_shape(self, scale):
-      super().resize_shape(scale)
       matrix = self.convert_scale_to_scale_matrix(scale)
       self.start_point = list(map(int, self.start_point @ matrix))
       self.end_point = list(map(int, self.end_point @ matrix))
+      super().resize_shape(scale)
       
     
 class Point(BasicShape):
@@ -70,12 +70,12 @@ class Point(BasicShape):
    def draw(self, board : np):
       cv2.circle(board, center=self.position, radius=1, color=self.line_color, thickness=self.thickness)
       
-   def calculate_bounding_rectangle(self):
+   def calculate_bbox(self):
       return [self.position, self.position]
       
    def translate_shape(self, translation):
-      super().translate_shape(translation)
       self.position = self.add_lists(self.position, translation)
+      super().translate_shape(translation)
 
    def rotate_shape(self, angle):
       return
@@ -97,7 +97,7 @@ class Rectangle(BasicShape):
          cv2.fillPoly(board, [box], color=self.fill_color)
       cv2.polylines(board, [box], isClosed=True, color=self.line_color, thickness=self.thickness)
    
-   def calculate_bounding_rectangle(self):
+   def calculate_bbox(self):
       points = np.array([self.p1, self.p2, self.p3, self.p4], dtype=np.int32)[:, np.newaxis]
       x, y, w, h = cv2.boundingRect(points)
       return [[x, y], [x+w, y+h]] 
@@ -113,27 +113,27 @@ class Rectangle(BasicShape):
 
 
    def translate_shape(self, translation):
-      super().translate_shape(translation)
       self.p1 = self.add_lists(self.p1, translation)
       self.p2 = self.add_lists(self.p2, translation)
       self.p3 = self.add_lists(self.p3, translation)
       self.p4 = self.add_lists(self.p4, translation)
+      super().translate_shape(translation)
 
    def rotate_shape(self, angle):
-      super().rotate_shape(angle)
-      matrix = self.convert_angle_to_translation_matrix(angle)
+      matrix = self.convert_angle_to_rotation_matrix(angle)
       self.p1 = list(map(int, self.p1 @ matrix))
       self.p2 = list(map(int, self.p2 @ matrix))
       self.p3 = list(map(int, self.p3 @ matrix))
       self.p4 = list(map(int, self.p4 @ matrix))
+      super().rotate_shape(angle)
 
    def resize_shape(self, scale):
-      super().resize_shape(scale)
       matrix = self.convert_scale_to_scale_matrix(scale)
       self.p1 = list(map(int, self.p1 @ matrix))
       self.p2 = list(map(int, self.p2 @ matrix))
       self.p3 = list(map(int, self.p3 @ matrix))
       self.p4 = list(map(int, self.p4 @ matrix))
+      super().resize_shape(scale)
    
 class Triangle(BasicShape):
    _required_args = {
@@ -157,29 +157,29 @@ class Triangle(BasicShape):
       cv2.line(board, pt1=points[1], pt2=points[2], color=self.line_color, thickness=self.thickness)
       cv2.line(board, pt1=points[2], pt2=points[0], color=self.line_color, thickness=self.thickness)
    
-   def calculate_bounding_rectangle(self):
+   def calculate_bbox(self):
       x_values = [self.p1[0], self.p2[0], self.p3[0]]
       y_values = [self.p1[1], self.p2[1], self.p3[1]]
       return [[min(x_values), min(y_values)],[max(x_values), max(y_values)]]
       
    def translate_shape(self, translation):
-      super().translate_shape(translation)
       self.p1 = self.add_lists(self.p1, translation)
       self.p2 = self.add_lists(self.p2, translation)
       self.p3 = self.add_lists(self.p3, translation)
+      super().translate_shape(translation)
 
    def rotate_shape(self, angle):
-      super().rotate_shape(angle)
-      matrix = self.convert_angle_to_translation_matrix(angle)
+      matrix = self.convert_angle_to_rotation_matrix(angle)
       self.p1 = list(map(int, (self.p1 @ matrix)))
       self.p2 = list(map(int, self.p2 @ matrix))
       self.p3 = list(map(int, self.p3 @ matrix))
+      super().rotate_shape(angle)
 
       
    def resize_shape(self, scale):
-      super().resize_shape(scale)
       matrix = self.convert_scale_to_scale_matrix(scale)
       self.p1 = list(map(int, self.p1 @ matrix))
       self.p2 = list(map(int, self.p2 @ matrix))
       self.p3 = list(map(int, self.p3 @ matrix))
+      super().resize_shape(scale)
    
