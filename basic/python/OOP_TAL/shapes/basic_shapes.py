@@ -1,6 +1,9 @@
 from shapes.shape_tree import BasicShape
 import cv2
 import numpy as np
+import warnings
+
+warnings.filterwarnings("default")  # or "always"
 
 __all__ = ["Circle", "Line", "Point", "Rectangle", "Triangle"]
 
@@ -38,10 +41,11 @@ class Circle(BasicShape):
         self.center = self.add_lists(self.center, translation)
 
     def rotate_shape(self, angle: float) -> None:
+        warnings.warn("Attempting rotation of a circle shape is redundant")
         return
 
     def resize_shape(self, scale: float) -> None:
-        self.radius = self.radius * scale
+        self.radius = round(self.radius * scale)
 
 
 class Line(BasicShape):
@@ -71,13 +75,13 @@ class Line(BasicShape):
 
     def rotate_shape(self, angle: float) -> None:
         matrix = self.convert_angle_to_rotation_matrix(angle)
-        self.start_point = list(map(int, self.start_point @ matrix))
-        self.end_point = list(map(int, self.end_point @ matrix))
+        self.start_point = (self.start_point @ matrix).round().astype(int)
+        self.end_point = (self.end_point @ matrix).round().astype(int)
 
     def resize_shape(self, scale: float) -> None:
         matrix = self.convert_scale_to_scale_matrix(scale)
-        self.start_point = list(map(int, self.start_point @ matrix))
-        self.end_point = list(map(int, self.end_point @ matrix))
+        self.start_point = (self.start_point @ matrix).round().astype(int)
+        self.end_point = (self.end_point @ matrix).round().astype(int)
 
 
 class Point(BasicShape):
@@ -102,9 +106,11 @@ class Point(BasicShape):
         self.position = self.add_lists(self.position, translation)
 
     def rotate_shape(self, angle: float) -> None:
+        warnings.warn("Attempting rotation of a point shape is redundant")
         return
 
     def resize_shape(self, scale: float) -> None:
+        warnings.warn("Attempting resize of a point shape is redundant")
         return
 
 
