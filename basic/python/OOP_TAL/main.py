@@ -6,14 +6,14 @@ def main(json_path):
     board = Board()
     shapes = ShapeFactory.create_shapes_from_json(json_path)
     board.draw(shapes)
-    board.save("board.png")
+    board.save("results/board.png")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "json_path",
         nargs="?",
-        default="house.json",
+        default="configurations/my_drawing.json",
         help="Path to JSON file used for the drawing",
     )
     args = parser.parse_args()
