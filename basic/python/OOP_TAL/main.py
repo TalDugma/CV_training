@@ -11,8 +11,7 @@ def main(json_path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "json_path",
-        nargs="?",
+        "--json_path",
         default="configurations/my_drawing.json",
         help="Path to JSON file used for the drawing",
     )
