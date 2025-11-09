@@ -1,0 +1,66 @@
+[
+    {
+        "name": "triangle",
+        "p1": [
+            120,
+            90
+        ],
+        "p2": [
+            120,
+            110
+        ],
+        "p3": [
+            105,
+            100
+        ],
+        "fill_color": [
+            50,
+            50,
+            50
+        ],
+        "line_color": [
+            0,
+            0,
+            0
+        ],
+        "translation": [
+            10,
+            0
+        ]
+    },
+    {
+        "name": "circle",
+        "radius": 15,
+        "center": [
+            100,
+            100
+        ],
+        "fill_color": [
+            50,
+            50,
+            50
+        ],
+        "line_color": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "name": "circle",
+        "radius": 3,
+        "center": [
+            100,
+            100
+        ],
+        "fill_color": [
+            255,
+            0,
+            0
+        ],
+        "translation": [
+            -5,
+            -5
+        ]
+    }
+]
