@@ -2,11 +2,13 @@ import argparse
 from board import Board
 from shapes import ShapeFactory
 
-def main(json_path):
-    board = Board()
-    shapes = ShapeFactory.create_shapes_from_json(json_path)
+
+def main(args):
+    board = Board(args.background_color)
+    shapes = ShapeFactory.create_shapes_from_json(args.json_path)
     board.draw(shapes)
     board.save("results/board.png")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -15,6 +17,11 @@ if __name__ == "__main__":
         default="configurations/my_drawing.json",
         help="Path to JSON file used for the drawing",
     )
+    parser.add_argument(
+        "--background_color",
+        default=[255, 0, 0],
+        help="BGR value of background color to board",
+    )
     args = parser.parse_args()
 
-    main(args.json_path)
+    main(args)
