@@ -57,10 +57,12 @@ class ShapeComponent(ABC):
     def _apply_manipulations(self) -> None:
         self.translate_shape(self.translation)
         self.translate_bbox(self.translation)
-        self.move_shape_to_center_aligned_axis([-x for x in self.bbox_center])
+        self.translate_shape(
+            [-x for x in self.bbox_center]
+        )  # Moves shape to center aligned axis
         self.rotate_shape(self.rotation)
         self.resize_shape(self.resize)
-        self.move_shape_to_center_aligned_axis(self.bbox_center)
+        self.translate_shape(self.bbox_center)  # Moves shape back to original axis
 
     @staticmethod
     def convert_angle_to_rotation_matrix(angle: float) -> np.ndarray:
@@ -76,9 +78,6 @@ class ShapeComponent(ABC):
     @staticmethod
     def add_lists(a: list, b: list) -> list:
         return [x + y for x, y in zip(a, b)]
-
-    def move_shape_to_center_aligned_axis(self, center: list[int, int]) -> None:
-        self.translate_shape(center)
 
     @abstractmethod
     def draw():
