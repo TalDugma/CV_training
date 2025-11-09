@@ -21,10 +21,9 @@ class ShapeComponent(ABC):
     self._validate_shape_input(required_args.copy(), optional_args, kwargs)
     self._set_attributes(kwargs, optional_args)
 
-    self.bbox = self.calculate_bbox()
+    self.bbox_center = self.calculate_bbox_center()
     self._apply_manipulations()
     
-
   
   def _validate_shape_input(self, required_args : set, optional_args : dict, kwargs : dict):
     for key in kwargs:
@@ -43,33 +42,21 @@ class ShapeComponent(ABC):
 
   
   @abstractmethod
-  def calculate_bbox(self) -> list[list[int, int], list[int, int]]:
+  def calculate_bbox_center(self) -> list[int, int]:
     pass
 
   def translate_bbox(self, translation : list[int, int]) -> None:
-    self.bbox = [self.add_lists(self.bbox[0], translation), self.add_lists(self.bbox[1], translation)]
+    self.bbox_center = self.add_lists(self.bbox_center, translation)
     
-  def resize_bbox(self, scale : float):
-    matrix = self.convert_scale_to_scale_matrix(scale)
-    top_left = (np.array(self.bbox[0]) @ matrix).tolist()
-    bottom_right = (np.array(self.bbox[1]) @ matrix).tolist()
-    self.bbox = [top_left, bottom_right]
-
-  def rotate_bbox(self, angle : float):
-    matrix = self.convert_angle_to_rotation_matrix(angle)
-    top_left = (np.array(self.bbox[0]) @ matrix).tolist()
-    bottom_right = (np.array(self.bbox[1]) @ matrix).tolist()
-    self.bbox = [top_left, bottom_right]
-
 
   def _apply_manipulations(self):
-    bbox_center = [int((self.bbox[0][0] + self.bbox[1][0])/2),int((self.bbox[0][1] + self.bbox[1][1])/2)]
     self.translate_shape(self.translation)
-    self.move_shape_to_center_aligned_axis([-x for x in bbox_center])
-    self.resize_shape(self.resize)
+    self.translate_bbox(self.translation)
+    self.move_shape_to_center_aligned_axis([-x for x in self.bbox_center])
     self.rotate_shape(self.rotation)
-    self.move_shape_to_center_aligned_axis(bbox_center)
-  
+    self.resize_shape(self.resize)
+    self.move_shape_to_center_aligned_axis(self.bbox_center)
+
 
   @staticmethod
   def convert_angle_to_rotation_matrix(angle : float):
@@ -95,16 +82,15 @@ class ShapeComponent(ABC):
   
   @abstractmethod
   def resize_shape(self, scale : float):
-    self.resize_bbox(scale)
+    pass
   
   @abstractmethod
   def rotate_shape(self, angle: float):
-    self.rotate_bbox(angle)
+    pass
 
   @abstractmethod
   def translate_shape(self, translation : list[int,int]):
-    self.translate_bbox(translation)
-  
+    pass
 
 
 class CompositeShape(ShapeComponent):
@@ -113,26 +99,33 @@ class CompositeShape(ShapeComponent):
   }
 
   def resize_shape(self, scale):
-    return super().resize_shape(scale)
+    for shape in self.shapes:
+      shape.resize_shape(scale)
   
   def rotate_shape(self, angle):
-    return super().rotate_shape(angle)
-  
+    for shape in self.shapes:
+      shape.rotate_shape(angle)
+
   def translate_shape(self, translation):
-    return super().translate_shape(translation)
+    for shape in self.shapes:
+      shape.translate_shape(translation)
 
   def draw(self, board):
     for shape in self.shapes:
       shape.draw(board)
 
-  def calculate_bbox(self): 
-    shapes_bboxs = [shape.bbox for shape in self.shapes]
+  def calculate_bbox(self):
+    shapes_bboxs = [shape.calculate_bbox() for shape in self.shapes]
     x_values = []
     y_values = []
     for bbox in shapes_bboxs:
       x_values.extend([bbox[0][0], bbox[1][0]])
       y_values.extend([bbox[0][1], bbox[1][1]])
-    return [[min(x_values), min(y_values)], [max(x_values), max(y_values)]]
+    return [[min(x_values), min(y_values)], [max(x_values), max(y_values)]]    
+  
+  def calculate_bbox_center(self): 
+    bbox = self.calculate_bbox()
+    return [int((bbox[0][0] + bbox[1][0])/2), int((bbox[0][1] + bbox[1][1])/2)]
       
   
 
