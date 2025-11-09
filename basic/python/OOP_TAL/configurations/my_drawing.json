@@ -1,0 +1,14 @@
+[
+    {
+        "name": "composite",
+        "path": "configurations/background.json"
+    },
+    {
+        "name": "composite",
+        "path": "configurations/neighborhood.json"
+    },
+    {
+        "name": "composite",
+        "path": "configurations/ships.json"
+    }
+]

@@ -1,0 +1,44 @@
+[
+    {
+        "name": "rectangle",
+        "top_left": [
+            0,
+            0
+        ],
+        "bottom_right": [
+            800,
+            250
+        ],
+        "fill_color": [
+            110,
+            193,
+            225
+        ],
+        "line_color": [
+            255,
+            255,
+            255
+        ]
+    },
+    {
+        "name": "rectangle",
+        "top_left": [
+            800,
+            600
+        ],
+        "bottom_right": [
+            0,
+            250
+        ],
+        "fill_color": [
+            191,
+            208,
+            6
+        ],
+        "line_color": [
+            255,
+            255,
+            255
+        ]
+    }
+]

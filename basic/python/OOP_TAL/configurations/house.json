@@ -1,0 +1,87 @@
+[
+    {
+        "name": "triangle",
+        "p1": [
+            100,
+            100
+        ],
+        "p2": [
+            200,
+            100
+        ],
+        "p3": [
+            150,
+            65
+        ],
+        "line_color": [
+            0,
+            0,
+            0
+        ],
+        "fill_color": [
+            0,
+            0,
+            255
+        ]
+    },
+    {
+        "name": "rectangle",
+        "top_left": [
+            100,
+            100
+        ],
+        "bottom_right": [
+            200,
+            200
+        ],
+        "line_color": [
+            0,
+            0,
+            0
+        ],
+        "fill_color": [
+            0,
+            50,
+            100
+        ]
+    },
+    {
+        "name": "rectangle",
+        "top_left": [
+            135,
+            160
+        ],
+        "bottom_right": [
+            165,
+            200
+        ],
+        "fill_color": [
+            125,
+            125,
+            125
+        ],
+        "line_color": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "name": "circle",
+        "center": [
+            120,
+            130
+        ],
+        "radius": 12,
+        "line_color": [
+            0,
+            0,
+            0
+        ],
+        "fill_color": [
+            255,
+            125,
+            125
+        ]
+    }
+]
