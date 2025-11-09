@@ -34,8 +34,8 @@ class ShapeFactory:
     @classmethod
     def create_composite_shape(cls, shape_dict: dict):
         if "path" in shape_dict:
-            shape_list = cls.create_shapes_from_json(shape_dict["path"])
-            shape_dict.pop("path")
+            path = shape_dict.pop("path")
+            shape_list = cls.create_shapes_from_json(path)
         elif "shapes" in shape_dict:
             shape_list = cls.create_shapes_from_shape_list(shape_dict["shapes"])
         else:
