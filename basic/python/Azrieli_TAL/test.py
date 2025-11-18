@@ -1,13 +1,17 @@
 import pandas as pd
 import os
 import numpy as np
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
+from utils import *
+
+
 import seaborn as sns
 import matplotlib.pyplot as plt
 
 DATA_PATH = "Azrieli_TAL/data"
-# NOTE: Mean v: 75.74753966299234
+MEAN_V = 75.74753966299234
+MEAN_KMS = 66.4966658541842
 # NOTE: Median v: 74.99169614486497
 
 
@@ -72,27 +76,52 @@ def get_unique_truck_ids(trips_path="Azrieli_TAL/data/trips_data"):
     return np.unique(months)
 
 
-def get_velocity(start_time: str, end_time: str, km: float):
+def get_trip_length(start_time: str, end_time: str):
     if pd.isna(end_time) or pd.isna(start_time):
         return None
     start_time = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S")
     end_time = datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S")
     hours = (end_time - start_time).total_seconds() / 3600
-    speed_kmh = km / hours
-    return speed_kmh
+    return hours
 
 
-def get_all_velocities(data_path=Path("Azrieli_TAL/data/trips_data")):
+def get_all_velocities(data_path=Path("Azrieli_TAL/data/trips_data_processed")):
     velocities = []
     for trip in os.listdir(data_path):
         df = pd.read_csv(data_path / trip)
         for start_time, end_time, km in zip(df["start_time"], df["end_time"], df["km"]):
+            if pd.isna(start_time) and pd.isna(end_time):
+                print("h")
             velocity = get_velocity(start_time, end_time, km)
             if velocity:
-                if velocity < 20 or velocity > 150:
-                    print(trip, velocity)
                 velocities.append(velocity)
     return velocities
+
+
+def get_all_trip_lengths(data_path=Path("Azrieli_TAL/data/trips_data_processed")):
+    lengths = []
+    for trip in os.listdir(data_path):
+        df = pd.read_csv(data_path / trip)
+        for driver_id, start_time, end_time, km in zip(
+            df["driver_id"], df["start_time"], df["end_time"], df["km"]
+        ):
+            length = get_trip_length(start_time, end_time)
+            if length:
+                if length > 48:
+                    print(trip, length)
+                lengths.append(length)
+    return lengths
+
+
+def get_all_trip_kms(data_path=Path("Azrieli_TAL/data/trips_data")):
+    kms = []
+    for trip in os.listdir(data_path):
+        df = pd.read_csv(data_path / trip)
+        for driver_id, km in zip(df["driver_id"], df["km"]):
+            if km:
+                if km < 100:
+                    kms.append(float(km))
+    return kms
 
 
 def violin_plot_velocities():
@@ -106,8 +135,24 @@ def violin_plot_velocities():
     plt.show()
 
 
-get_all_velocities()
+def violin_plot_kms():
+    kms = get_all_trip_kms()
+    df = {"Drivers": len(kms) * ["All Drivers"], "V": kms}
+    plt.figure(figsize=(6, 4))
+    sns.violinplot(x="Drivers", y="V", data=df)
+    plt.xlabel("")
+    plt.ylabel("Trip Length (km)")
+    plt.title("Trip Length Plot of All Drivers")
+    plt.show()
 
+
+# violin_plot_kms()
+save_path = preprocess_kms()
+preprocess_velocities(save_path)
+# all_trips_kms = get_all_trip_kms()
+# print(np.mean(all_trips_kms))
+# get_all_trip_lengths()
+# violin_plot_velocities()
 # velocities = get_all_velocities()
 # print("Mean v:", np.mean(np.array(velocities)))
 # print("Median v:", np.median(np.array(velocities)))

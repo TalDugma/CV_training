@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run create_summary.py",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/Azrieli_TAL/create_summary.py",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYDEVD_USE_FRAME_EVAL": "NO"
+            }
+        }
+    ]
+}
