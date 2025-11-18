@@ -1,0 +1,30 @@
+[
+    {
+        "name": "composite",
+        "path": "configurations/dinghy.json",
+        "translation": [
+            400,
+            400
+        ],
+        "rotation": -15,
+        "resize": 1.2
+    },
+    {
+        "name": "composite",
+        "path": "configurations/dinghy.json",
+        "translation": [
+            0,
+            300
+        ],
+        "resize": 0.9
+    },
+    {
+        "name": "composite",
+        "path": "configurations/dinghy.json",
+        "translation": [
+            200,
+            200
+        ],
+        "rotation": 20
+    }
+]

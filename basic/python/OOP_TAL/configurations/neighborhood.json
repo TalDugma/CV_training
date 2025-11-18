@@ -1,0 +1,26 @@
+[
+    {
+        "name": "composite",
+        "path": "configurations/house.json",
+        "translation": [
+            50,
+            0
+        ]
+    },
+    {
+        "name": "composite",
+        "path": "configurations/house.json",
+        "translation": [
+            250,
+            0
+        ]
+    },
+    {
+        "name": "composite",
+        "path": "configurations/house.json",
+        "translation": [
+            450,
+            0
+        ]
+    }
+]

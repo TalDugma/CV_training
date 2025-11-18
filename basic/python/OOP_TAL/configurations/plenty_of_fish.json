@@ -1,0 +1,48 @@
+[
+    {
+        "name": "composite",
+        "path": "configurations/fish.json",
+        "translation": [
+            300,
+            300
+        ],
+        "rotation": 30,
+        "resize": 0.9
+    },
+    {
+        "name": "composite",
+        "path": "configurations/fish.json",
+        "translation": [
+            400,
+            300
+        ],
+        "rotation": -15,
+        "resize": 1.1
+    },
+    {
+        "name": "composite",
+        "path": "configurations/fish.json",
+        "translation": [
+            200,
+            400
+        ],
+        "rotation": 10
+    },
+    {
+        "name": "composite",
+        "path": "configurations/fish.json",
+        "translation": [
+            100,
+            450
+        ]
+    },
+    {
+        "name": "composite",
+        "path": "configurations/fish.json",
+        "translation": [
+            150,
+            200
+        ],
+        "rotation": 30
+    }
+]

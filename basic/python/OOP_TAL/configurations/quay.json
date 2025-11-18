@@ -1,0 +1,127 @@
+[
+    {
+        "name": "rectangle",
+        "top_left": [
+            450,
+            250
+        ],
+        "bottom_right": [
+            500,
+            350
+        ],
+        "fill_color": [
+            50,
+            50,
+            50
+        ],
+        "line_color": [
+            0,
+            0,
+            0
+        ],
+        "translation": [
+            100,
+            0
+        ]
+    },
+    {
+        "name": "line",
+        "start_point": [
+            450,
+            250
+        ],
+        "end_point": [
+            500,
+            250
+        ],
+        "translation": [
+            100,
+            100
+        ],
+        "line_color": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "name": "line",
+        "start_point": [
+            450,
+            250
+        ],
+        "end_point": [
+            500,
+            250
+        ],
+        "translation": [
+            100,
+            20
+        ],
+        "line_color": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "name": "line",
+        "start_point": [
+            450,
+            250
+        ],
+        "end_point": [
+            500,
+            250
+        ],
+        "translation": [
+            100,
+            40
+        ],
+        "line_color": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "name": "line",
+        "start_point": [
+            450,
+            250
+        ],
+        "end_point": [
+            500,
+            250
+        ],
+        "translation": [
+            100,
+            60
+        ],
+        "line_color": [
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "name": "line",
+        "start_point": [
+            450,
+            250
+        ],
+        "end_point": [
+            500,
+            250
+        ],
+        "translation": [
+            100,
+            80
+        ],
+        "line_color": [
+            0,
+            0,
+            0
+        ]
+    }
+]

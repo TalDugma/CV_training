@@ -1,0 +1,22 @@
+[
+    {
+        "name": "composite",
+        "path": "configurations/background.json"
+    },
+    {
+        "name": "composite",
+        "path": "configurations/quay.json"
+    },
+    {
+        "name": "composite",
+        "path": "configurations/neighborhood.json"
+    },
+    {
+        "name": "composite",
+        "path": "configurations/dinghies.json"
+    },
+    {
+        "name": "composite",
+        "path": "configurations/plenty_of_fish.json"
+    }
+]
